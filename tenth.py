@@ -23,7 +23,8 @@ class Pipegrid:
 
         if x >= len(self.grid[y]) or y >= len(self.grid) or x < 0 or y < 0:
             return None
-        area = (lasty + y) * (x - lastx) / 2 # Fleache unter Trapez -> summieren -> Flaeche innerhalb kurve
+        area = (lasty + y) * (x - lastx) / 2    # Fleache unter Trapez -> summieren -> Flaeche innerhalb kurve.
+                                                # Inspiriert von https://de.wikipedia.org/wiki/Polygon
         print(area,x,lastx,y,lasty)
         if t == '|':
             if lasty == y + 1 or reverse:
