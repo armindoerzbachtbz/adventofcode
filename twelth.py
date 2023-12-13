@@ -93,12 +93,14 @@ def getpossibilitiesfast(numbers, pattern):
                 break
         positions = newpositions
     return posibilities
-
-
+cache={}
 def getpossibilitiesrecursion(numbers, pattern):
     # this algorithm just takes the pattern and gos from left to right to look for the first
     # possibility to match the first number of hashes and uses recursion to find the possibilities
     # for the remaining numbers and the remaining part of the pattern
+    if (pattern+str(numbers) in cache):
+        cache[pattern+str(numbers)][1]+=1
+        return cache[pattern+str(numbers)][0]
 
     if not numbers:
         # We have no hash to match anymore
@@ -169,7 +171,23 @@ def getpossibilitiesrecursion(numbers, pattern):
     if countin == number and len(numbers) == 1 and len(pattern)==i:
         posibilities+=1
 
+    if (len(pattern+str(numbers))<300 and len(numbers)<30):
+        cache[pattern+str(numbers)]=[posibilities,0]
     return posibilities
+
+def cleanupcache():
+    print("Cachesize before cleanup:%d" % len(cache))
+    keys=[]
+    s=0
+    for key,item in cache.items():
+        if item[1]<1:
+            keys.append(key)
+        item[1]-=1
+        s+=item[1]
+    for key in keys:
+        cache.pop(key)
+    print("Cache Hits:%d"%s)
+    print("Cachesize after cleanup:%d" % len(cache))
 
 
 posibilities = 0
@@ -182,8 +200,8 @@ with open("twelth.txt", "r") as f:
         posibilities += posrec
         if posrec != posfast:
             print(pattern, numbers, posrec, posfast)
-print(posibilities)
-
+print("Posibilities Task1:%d"%posibilities)
+cleanupcache()
 posibilities = 0
 count=0
 with open("twelth.txt", "r") as f:
@@ -201,5 +219,6 @@ with open("twelth.txt", "r") as f:
         posibilities += posibilities_rec
         count += 1
         print(starttime,(datetime.datetime.now()-starttime).total_seconds(),count,posibilities_rec, posibilities, newpattern, numbers)
-
+        if not count % 10:
+            cleanupcache()
 print(posibilities)
