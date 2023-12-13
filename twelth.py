@@ -179,14 +179,18 @@ def cleanupcache():
     print("Cachesize before cleanup:%d" % len(cache))
     keys=[]
     s=0
+    p=0
     for key,item in cache.items():
         if item[1]<1:
             keys.append(key)
+        s += item[1]
+        p += item[0] * item[1]
         item[1]-=1
-        s+=item[1]
+
     for key in keys:
         cache.pop(key)
     print("Cache Hits:%d"%s)
+    print("Sum of Possibilities cached:%d"%p)
     print("Cachesize after cleanup:%d" % len(cache))
 
 
