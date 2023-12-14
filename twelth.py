@@ -1,6 +1,7 @@
 import datetime
 import functools
 import re
+from operator import itemgetter
 
 
 def checkmodifiedpattern(numbers, modifiedpattern):
@@ -176,21 +177,35 @@ def getpossibilitiesrecursion(numbers, pattern):
     return posibilities
 
 def cleanupcache():
-    print("Cachesize before cleanup:%d" % len(cache))
+
     keys=[]
     s=0
     p=0
+    l=0
+    bestcache=sorted(filter(lambda t:t[1][1],cache.items()),key=lambda t:t[1][0]*t[1][1])[-10:]
+    print('Topcacheentries')
+    print('===============')
+    for i in bestcache:
+        print(f'Key={i[0]} Numberofusesofentry={i[1][1]} Numberofposibilietiesreturned={i[1][0]} Totalnumberofiterationssaved={i[1][0]*i[1][1]}')
+    print("Cachesize before cleanup:%d" % len(cache))
     for key,item in cache.items():
         if item[1]<1:
             keys.append(key)
         s += item[1]
         p += item[0] * item[1]
+        if item[1]:
+            if l < item[0]:
+                l=item[0]
+                ln = item[1]
+                lp = key
         item[1]-=1
 
     for key in keys:
         cache.pop(key)
     print("Cache Hits:%d"%s)
     print("Sum of Possibilities cached:%d"%p)
+    print("Largest number of Possibilities returned by cache:%d (count:%d)"%(l,ln))
+    print("Key of Largest number of Possibilities returned by cache:%s"%lp)
     print("Cachesize after cleanup:%d" % len(cache))
 
 
@@ -223,6 +238,6 @@ with open("twelth.txt", "r") as f:
         posibilities += posibilities_rec
         count += 1
         print(starttime,(datetime.datetime.now()-starttime).total_seconds(),count,posibilities_rec, posibilities, newpattern, numbers)
-        if not count % 10:
+        if not count % 1000:
             cleanupcache()
 print(posibilities)
