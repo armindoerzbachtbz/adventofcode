@@ -70,6 +70,8 @@ class Dish:
                 nextcells.append([x, y - 1, self.NORTH])
             if self.dish[y][x] in [self.EMPTY, self.SPLITHOR]:
                 nextcells.append([x + 1, y, direction])
+
+        # Check if nextcells are still on the dish
         nextcellsfiltered=[]
         for x,y,direction in nextcells:
             if x>=0 and x<self.maxwidth and y>=0 and y<self.maxheight:
